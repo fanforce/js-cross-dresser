@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>CrossDresser Frame</title>
+    <script type='text/javascript'>
+        window.onload = function() {
+            try {
+                if (window.opener || (window.top && window.top.opener)) {
+                    environment = 'popup'
+                    parent = window.opener || window.top.opener
+                } else if (window.top) {
+                    environment = 'frame'
+                    parent = window.top
+                } else {
+                    throw('not found')
+                }
+                parent.CrossDresser.conduit.fromIframe(environment, document.location.href)
+            } catch(err) {
+                console.error('CrossDresser can only be used inside an iframe or popup window: ' + err)
+            }
+        }
+    </script>
+</head>
+<body></body>
+</html>
+

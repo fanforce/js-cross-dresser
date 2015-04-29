@@ -16,6 +16,7 @@
                 parent.CrossDresser.conduit.fromIframe(environment, document.location.href)
             } catch(err) {
                 console.error('CrossDresser can only be used inside an iframe or popup window: ' + err)
+                console.log(err)
             }
         }
     </script>

@@ -24,24 +24,13 @@ module.exports = function(grunt) {
                 }
             }
         },
-        concat: {
-            options: {
-                banner: '<%= banner %>',
-                stripBanners: true,
-                separator: ';'
-            },
-            dist: {
-                src: ['src/<%= pkg.name %>.js'],
-                dest: 'dist/<%= pkg.name %>.js'
-            }
-        },
         uglify: {
             options: {
                 banner: '<%= banner %>'
             },
             dist: {
-                src: '<%= concat.dist.dest %>',
-                dest: 'dist/<%= pkg.name %>.min.js'
+                src: '<%= typescript.base.dest %>',
+                dest: 'dist/cross-dresser.min.js'
             }
         },
         jshint: {
@@ -69,10 +58,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-typescript');
 
     // Default task.
-    grunt.registerTask('default', ['typescript', 'jshint', 'concat', 'uglify']);
+    grunt.registerTask('default', ['typescript', 'jshint', 'uglify']);
 
 };

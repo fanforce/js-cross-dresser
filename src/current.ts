@@ -28,16 +28,16 @@ module CrossDresser {
             this.raw_uri = CrossDresser.Utils.parseUrl(this.raw_url);
             this.raw_params = Utils.parseQueryString(this.raw_uri.query_string);
             try {
-                if (window.opener || (window.top && window.top.opener)) {
-                    this.environment = 'popup'
-                    this.parent = window.opener || window.top.opener
-                    this.is_popup = true
-                } else if (window.top && window.top != window.self && document.referrer != this.raw_url.replace(document.location.hash,'')) {
+                if (window.top && window.top != window.self && document.referrer != this.raw_url.replace(document.location.hash,'')) {
                     this.environment = 'frame'
                     this.parent = window.top
                     this.is_frame = true
                     this.is_native = this.isNativeFrame()
-                }else {
+                }else if (window.opener || (window.top && window.top.opener)) {
+                    this.environment = 'popup'
+                    this.parent = window.opener || window.top.opener
+                    this.is_popup = true
+                } else {
                     this.environment = 'toplevel'
                     this.parent = null
                 }
@@ -53,8 +53,8 @@ module CrossDresser {
 
         isNativeFrame(): boolean {
             try {
-                var parent_host = CrossDresser.Utils.parseUrl(window.top.location.href).host
                 var current_host = this.raw_uri.host
+                var parent_host = CrossDresser.Utils.parseUrl(window.top.location.href).host
                 return (parent_host == current_host) ? true : false
             } catch(err) {
                 return false
@@ -74,7 +74,7 @@ module CrossDresser {
             this._id = array[0]
             this.parent_conduit_url = decodeURIComponent(array[1])
             if (array[2]) {
-                this.url_to_load = decodeURIComponent(array[2]);
+                this.url_to_load = atob(decodeURIComponent(array[2]));
             }
 
             if (this.url_to_load && !this.is_native) {

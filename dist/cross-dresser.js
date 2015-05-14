@@ -219,9 +219,9 @@ var CrossDresser;
             return this.element = this.element || $('iframe#' + this._id);
         };
         ChildFrame.prototype.loadContent = function () {
-            if (this.instance.content_prms) {
+            if (this.instance.content_request) {
                 var frame = this;
-                this.instance.content_prms.then(function (html) {
+                this.instance.content_request.then(function (html) {
                     frame.getElement()[0].contentWindow.CrossDresser.injectIntoPage(html);
                 });
             }
@@ -243,7 +243,7 @@ var CrossDresser;
             var is_native = false;
             if (settings.use_native_base) {
                 var goto_url = ((url.indexOf('?') > -1) ? url + '&' : url + '?') + $.param(attrs);
-                var content_prms = $.ajax({
+                var content_request = $.ajax({
                     url: goto_url,
                     dataType: 'jsonp',
                     jsonp: 'callback'
@@ -254,7 +254,7 @@ var CrossDresser;
             }
             attrs.crss_drssr = _id + '::' + encodeURIComponent(CrossDresser.current.getConduitUrl());
             if (goto_url) {
-                attrs.crss_drssr += '::' + encodeURIComponent(goto_url);
+                attrs.crss_drssr += '::' + encodeURIComponent(btoa(goto_url));
             }
             url = (url.indexOf('?') > -1) ? url + '&' : url + '?';
             url += $.param(attrs);
@@ -264,7 +264,7 @@ var CrossDresser;
                 height: height,
                 url: url,
                 is_native: is_native,
-                content_prms: content_prms
+                content_request: content_request
             };
             return new ChildFrame(_id);
         };
@@ -559,16 +559,16 @@ var CrossDresser;
             this.raw_uri = CrossDresser.Utils.parseUrl(this.raw_url);
             this.raw_params = CrossDresser.Utils.parseQueryString(this.raw_uri.query_string);
             try {
-                if (window.opener || (window.top && window.top.opener)) {
-                    this.environment = 'popup';
-                    this.parent = window.opener || window.top.opener;
-                    this.is_popup = true;
-                }
-                else if (window.top && window.top != window.self && document.referrer != this.raw_url.replace(document.location.hash, '')) {
+                if (window.top && window.top != window.self && document.referrer != this.raw_url.replace(document.location.hash, '')) {
                     this.environment = 'frame';
                     this.parent = window.top;
                     this.is_frame = true;
                     this.is_native = this.isNativeFrame();
+                }
+                else if (window.opener || (window.top && window.top.opener)) {
+                    this.environment = 'popup';
+                    this.parent = window.opener || window.top.opener;
+                    this.is_popup = true;
                 }
                 else {
                     this.environment = 'toplevel';
@@ -587,8 +587,8 @@ var CrossDresser;
         }
         Current.prototype.isNativeFrame = function () {
             try {
-                var parent_host = CrossDresser.Utils.parseUrl(window.top.location.href).host;
                 var current_host = this.raw_uri.host;
+                var parent_host = CrossDresser.Utils.parseUrl(window.top.location.href).host;
                 return (parent_host == current_host) ? true : false;
             }
             catch (err) {
@@ -607,7 +607,7 @@ var CrossDresser;
             this._id = array[0];
             this.parent_conduit_url = decodeURIComponent(array[1]);
             if (array[2]) {
-                this.url_to_load = decodeURIComponent(array[2]);
+                this.url_to_load = atob(decodeURIComponent(array[2]));
             }
             if (this.url_to_load && !this.is_native) {
                 var url = this.url_to_load;

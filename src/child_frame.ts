@@ -55,9 +55,9 @@ module CrossDresser {
         }
 
         loadContent() {
-            if (this.instance.content_prms) {
+            if (this.instance.content_request) {
                 var frame = this
-                this.instance.content_prms.then(function(html) {
+                this.instance.content_request.then(function(html) {
                     frame.getElement()[0].contentWindow.CrossDresser.injectIntoPage(html)
                 })
             }
@@ -86,7 +86,7 @@ module CrossDresser {
 
             if (settings.use_native_base) {
                 var goto_url = ((url.indexOf('?') > -1) ? url+'&' : url+'?') + $.param(attrs)
-                var content_prms = $.ajax({
+                var content_request = $.ajax({
                     url: goto_url,
                     dataType: 'jsonp',
                     jsonp: 'callback'
@@ -98,7 +98,7 @@ module CrossDresser {
 
             attrs.crss_drssr = _id + '::' + encodeURIComponent(current.getConduitUrl())
             if (goto_url) {
-                attrs.crss_drssr += '::' + encodeURIComponent(goto_url)
+                attrs.crss_drssr += '::' + encodeURIComponent(btoa(goto_url))
             }
 
             url = (url.indexOf('?') > -1) ? url+'&' : url+'?'
@@ -110,7 +110,7 @@ module CrossDresser {
                 height: height,
                 url: url,
                 is_native: is_native,
-                content_prms: content_prms
+                content_request: content_request
             }
             return new ChildFrame(_id)
         }

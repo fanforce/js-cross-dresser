@@ -4,14 +4,14 @@
     <script type='text/javascript'>
         window.onload = function() {
             try {
-                if (window.opener || (window.top && window.top.opener)) {
-                    environment = 'popup'
-                    parent = window.opener || window.top.opener
-                } else if (window.top) {
+                if (window.top && window.top != window.self) {
                     environment = 'frame'
                     parent = window.top
+                }else if (window.opener || (window.top && window.top.opener)) {
+                    environment = 'popup'
+                    parent = window.opener || window.top.opener
                 } else {
-                    throw('not found')
+                    throw('environment type is unknown')
                 }
                 parent.CrossDresser.conduit.fromIframe(environment, document.location.href)
             } catch(err) {

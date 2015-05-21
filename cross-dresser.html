@@ -4,7 +4,7 @@
     <script type='text/javascript'>
         window.onload = function() {
             try {
-                if (window.top && window.top != window.self) {
+                if (window.parent && window.parent.parent && window.parent != window.parent.parent) {
                     environment = 'frame'
                     parent = window.top
                 }else if (window.opener || (window.top && window.top.opener)) {

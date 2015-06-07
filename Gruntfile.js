@@ -1,5 +1,7 @@
 'use strict';
 
+// RUN "grunt" from the command line
+
 module.exports = function(grunt) {
 
     // Project configuration.

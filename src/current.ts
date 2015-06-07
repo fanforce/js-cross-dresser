@@ -77,6 +77,10 @@ module CrossDresser {
                 this.url_to_load = atob(decodeURIComponent(array[2]));
             }
 
+            this.url = this.raw_url;
+            this.uri = this.raw_uri;
+            this.params = this.raw_params;
+
             if (this.url_to_load && !this.is_native) {
                 var url = this.url_to_load
                 var crss_drssr = this._id + '::' +  encodeURIComponent(this.parent_conduit_url)
@@ -91,10 +95,6 @@ module CrossDresser {
                 setTimeout(()=> { this.trigger('native-base-ready', this.url_to_load) })
             } else if(this.environment == 'toplevel') {
                 console.log('NOTICE: CrossDresser parent not found - running as toplevel')
-            }else {
-                this.url = this.raw_url;
-                this.uri = this.raw_uri;
-                this.params = this.raw_params;
             }
         }
 
